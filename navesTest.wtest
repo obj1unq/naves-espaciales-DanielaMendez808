@@ -1,5 +1,6 @@
 import naves.*
 
+
 describe "Nave de carga" {
 
 	const naveVacia = new NaveDeCarga()
@@ -25,7 +26,30 @@ describe "Nave de carga" {
 		naveLlena.recibirAmenaza()
 		assert.equals(0, naveVacia.carga())
 	}
+	test "Test 1 Propulsar"{
+		naveVacia.propulsar()
+		assert.equals(20000, naveVacia.velocidad())
+	}
+}
+describe "NaveDeCargaDeResiduos" {
 
+	const naveVaciaDeResiduos = new NaveDeCargaDeResiduos()
+	const naveLlenaDeResiduos = new NaveDeCargaDeResiduos()(carga = 500000, velocidad = 290000)
+
+  test "test 2" {
+	naveVaciaDeResiduos.carga(5000)
+	naveVaciaDeResiduos.velocidad(10000)
+	naveVaciaDeResiduos.recibirAmenaza()
+	assert.equals(0, naveVaciaDeResiduos.velocidad())
+	assert.equals(5000, naveVaciaDeResiduos.carga())
+  }
+  test "test 3"{
+	naveLlenaDeResiduos.velocidad(0)
+	naveLlenaDeResiduos.selladaAlVacio(false)
+	naveLlenaDeResiduos.prepararViaje()
+	assert.equals(15000,naveLlenaDeResiduos.velocidad())
+	assert.equals(true,naveLlenaDeResiduos.selladaAlVacio())
+  }
 }
 
 describe "Nave de pasajeros" {
@@ -33,6 +57,20 @@ describe "Nave de pasajeros" {
 	const naveSinPasajeros = new NaveDePasajeros()
 	const naveConPasajeros = new NaveDePasajeros(cantidadDePasajeros = 296, velocidad = 290000)
 
+	test "test 1 Propulsar"{
+		naveConPasajeros.propulsar()
+		assert.equals(300000, naveConPasajeros.velocidad())
+	}
+	test "Test 3"{
+		naveConPasajeros.prepararViaje()
+		assert.equals(300000, naveConPasajeros.velocidad())
+	}
+	test "test 4"{
+		naveConPasajeros.velocidad(0)
+		naveConPasajeros.encuentraEnemigo()
+		assert.equals(20000,naveConPasajeros.velocidad())
+		assert.equals(true,naveConPasajeros.alarma())
+	}
 	test "velocidad maxima sin pasajeros" {
 		assert.equals(75000, naveSinPasajeros.velocidadMaximaLegal())
 	}
@@ -54,12 +92,25 @@ describe "Nave de pasajeros" {
 		assert.that(naveSinPasajeros.alarma())
 	}
 
+
 }
 
 describe "Nave de combate" {
 
 	const naveEnReposo = new NaveDeCombate()
 	const naveEnAtaque = new NaveDeCombate(modo = ataque)
+
+	test "test 3"{
+		naveEnAtaque.velocidad(0)
+		naveEnAtaque.prepararViaje()
+		assert.equals("Volviendo a la base", naveEnAtaque.ultimoMensaje())
+		assert.equals(15000, naveEnAtaque.velocidad())
+		naveEnReposo.velocidad(0)
+		naveEnReposo.prepararViaje()
+		assert.equals("Saliendo en mision",naveEnReposo.ultimoMensaje())
+		assert.equals(ataque, naveEnReposo.modo())
+		assert.equals(15000,naveEnReposo.velocidad())
+	}
 
 	test "no esta invisible en reposo" {
 		assert.notThat(naveEnReposo.estaInvisible())
